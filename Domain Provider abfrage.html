@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Domain Abfrage Tool</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      font-size: 28px;
+      margin-bottom: 40px;
+    }
+    input {
+      padding: 12px;
+      width: 300px;
+      font-size: 16px;
+      background-color: #eeeeee;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 20px;
+    }
+    button {
+      background-color: #FFD700;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      max-width: 600px;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Domain Abfrage Tool</h1>
+
+  <input type="text" id="domainInput" placeholder="z. B. herold.at" />
+  <button onclick="checkDomain()">🔄 Abfrage starten</button>
+
+  <div id="result"></div>
+
+  <script>
+    async function checkDomain() {
+      const input = document.getElementById('domainInput');
+      const resultEl = document.getElementById('result');
+      const domain = input.value.trim();
+
+      if (!domain) {
+        resultEl.textContent = "Bitte eine Domain eingeben.";
+        return;
+      }
+
+      resultEl.textContent = "Abfrage läuft...";
+
+      try {
+        const url = "https://script.google.com/macros/s/AKfycbwHq6a2CLU_TTiPSqS76dIwrB6WIjg25oJ8tYlDO75PeSBkb3KazfJ7wCDeWhPs6VAXsA/exec?domain=" + encodeURIComponent(domain);
+        const response = await fetch(url);
+        const data = await response.json();
+
+        resultEl.textContent = data.result + "\n\n(Nameserver: " + data.nameservers + ")";
+      } catch (error) {
+        resultEl.textContent = "Fehler bei der Abfrage. Bitte versuche es erneut.";
+      }
+    }
+  </script>
+
+</body>
+</html>
